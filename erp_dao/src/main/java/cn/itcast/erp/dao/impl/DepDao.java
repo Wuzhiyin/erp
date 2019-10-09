@@ -27,7 +27,7 @@ public class DepDao extends HibernateDaoSupport implements IDepDao {
      * @param dep1
      * @return
      */
-    public List<Dep> getList(Dep dep1,int firstResult,int maxResults) {
+    public List<Dep> getList(Dep dep1,Dep dep2,Object param,int firstResult,int maxResults) {
         DetachedCriteria dc = getDetachedCriteria(dep1);
         return (List<Dep>) this.getHibernateTemplate().findByCriteria(dc,firstResult,maxResults);
     }
@@ -36,13 +36,43 @@ public class DepDao extends HibernateDaoSupport implements IDepDao {
      * @param dep1
      * @return
      */
-    public long getCount(Dep dep1) {
+    public long getCount(Dep dep1,Dep dep2,Object param) {
         DetachedCriteria dc = getDetachedCriteria(dep1);
         dc.setProjection(Projections.rowCount());
         List<Long> list = (List<Long>)getHibernateTemplate().findByCriteria(dc);
         return list.get(0);
     }
+    /**
+     * 新增
+     * @param dep
+     */
+    public void add(Dep dep){
+        this.getHibernateTemplate().save(dep);
+    }
+    /**
+     * 删除
+     */
+    public void delete(Long uuid) {
+        //让对象进入持久化状态
+        Dep dep = this.getHibernateTemplate().get(Dep.class, uuid);
+        //删除持久化状态
+        this.getHibernateTemplate().delete(dep);
+    }
 
+    /**
+     * 通过编号查询对象
+     * @param uuid
+     * @return
+     */
+    public Dep get(Long uuid){
+        return getHibernateTemplate().get(Dep.class, uuid);
+    }
+    /**
+     * 更新
+     */
+    public void update(Dep dep){
+        this.getHibernateTemplate().update(dep);
+    }
     private DetachedCriteria getDetachedCriteria(Dep dep1){
         DetachedCriteria dc =DetachedCriteria.forClass(Dep.class);
         if(null != dep1){
@@ -60,4 +90,5 @@ public class DepDao extends HibernateDaoSupport implements IDepDao {
         }
         return dc;
     }
+
 }
